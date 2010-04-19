@@ -1,0 +1,906 @@
+Device info:
+Manufacturer: Canon Inc.
+  model: Canon EOS 400D DIGITAL
+  device version: 3-1.0.4
+  serial number: 'NNNNNNNNN'
+Vendor extension ID: 0x0000000b
+Vendor extension description: (null)
+Supported operations:
+  0x1015
+  0x1001
+  0x1002
+  0x1003
+  0x9013
+  0x1004
+  0x1005
+  0x1006
+  0x1007
+  0x1008
+  0x100a
+  0x1009
+  0x101b
+  0x100c
+  0x100d
+  0x100b
+  0x9101
+  0x9102
+  0x9103
+  0x9104
+  0x9107
+  0x9105
+  0x9117
+  0x9118
+  0x9116
+  0x910f
+  0x9115
+  0x9110
+  0x9114
+  0x9113
+  0x9106
+  0x910a
+  0x910b
+  0x910c
+  0x910e
+  0x911a
+  0x911b
+  0x911c
+  0x911d
+  0x9108
+  0x911f
+  0x9109
+  0x911e
+  0x9120
+  0x9121
+  0x91fe
+  0x91ff
+  0x901f
+Events Supported:
+  0x4009
+  0xc101
+Device Properties Supported:
+  0xd045
+  0xd049
+  0xd04a
+
+Camera summary:
+Model: Canon EOS 400D DIGITAL
+  device version: 3-1.1.1
+  serial number:  000000000000000000000000xxxxxxxx
+Vendor extension ID: 0x0000000b
+Vendor extension description: (null)
+
+Capture Formats: JPEG
+Display Formats: Association/Directory, Script, MS AVI, MS Wave, JPEG, CRW, Unknown(b103), Unknown(bf02), Defined Type
+
+Device Capabilities:
+	File Download, File Deletion, File Upload
+	No Image Capture, No Open Capture, No vendor specific capture
+
+Storage Devices Summary:
+store_00010001:
+	StorageDescription: CF
+	VolumeLabel: 
+	Storage Type: Removable RAM (memory card)
+	Filesystemtype: Digital Camera Layout (DCIM)
+	Access Capability: Read-Write
+	Maximum Capability: 4112781312 (3922 MB)
+	Free Space (Bytes): 3969277952 (3785 MB)
+	Free Space (Images): -1
+
+Device Property Summary:
+Event Emulate Mode(0xd045):(readwrite) (type=0x4) Enumeration [1,2,3,4,5,6,7] value: 2
+Property 0xd402:(read only) (type=0xffff) 'Canon EOS 400D DIGITAL'
+Property 0xd407:(read only) (type=0x6) 1
+Property 0xd406:(readwrite) (type=0xffff) 'Unknown Initiator'
+Model ID(0xd049):(read only) (type=0x6) 2147484214
+Property 0xd04a:(readwrite) (type=0x2) Enumeration [0,1,2,3] value: 0
+
+/main/actions/focuslock
+	Label: Focus Lock
+	Type: TOGGLE
+	Current: 2
+/main/actions/bulb
+	Label: Bulb Mode
+	Type: TOGGLE
+	Current: 2
+/main/actions/syncdatetime
+	Label: Synchronize camera date and time with PC
+	Type: TOGGLE
+	Current: 0
+/main/settings/datetime
+	Label: Camera Date and Time
+	Type: DATE
+	Current: 1249471394
+	Printable: Wed Aug  5 13:23:14 2009
+/main/settings/ownername
+	Label: Owner Name
+	Type: TEXT
+	Current: unknown
+/main/settings/capturetarget
+	Label: Capture Target
+	Type: RADIO
+	Current: Memory card
+	Choice: 0 Internal RAM
+	Choice: 1 Memory card
+/main/settings/capture
+	Label: Capture
+	Type: TOGGLE
+	Current: 2
+/main/status/batterylevel
+	Label: Battery Level
+	Type: TEXT
+	Current: 100%
+/main/status/availableshots
+	Label: Available Shots
+	Type: TEXT
+	Current: 121
+/main/imgsettings/imageformat
+	Label: Image Format
+	Type: RADIO
+	Current: RAW + Large Fine JPEG
+	Choice: 0 Large Fine JPEG
+	Choice: 1 Large Normal JPEG
+	Choice: 2 Medium Fine JPEG
+	Choice: 3 Medium Normal JPEG
+	Choice: 4 Small Fine JPEG
+	Choice: 5 Small Normal JPEG
+	Choice: 6 RAW
+	Choice: 7 RAW + Large Fine JPEG
+/main/imgsettings/iso
+	Label: ISO Speed
+	Type: RADIO
+	Current: 1600
+	Choice: 0 100
+	Choice: 1 200
+	Choice: 2 400
+	Choice: 3 800
+	Choice: 4 1600
+/main/imgsettings/whitebalance
+	Label: WhiteBalance
+	Type: RADIO
+	Current: Auto
+	Choice: 0 Auto
+	Choice: 1 Daylight
+	Choice: 2 Cloudy
+	Choice: 3 Tungsten
+	Choice: 4 Fluorescent
+	Choice: 5 Flash
+	Choice: 6 Manual
+	Choice: 7 Shadow
+/main/capturesettings/exposurecompensation
+	Label: Exposure Compensation
+	Type: RADIO
+	Current: 0
+	Choice: 0 -2
+	Choice: 1 -1.6
+	Choice: 2 -1.3
+	Choice: 3 -1.0
+	Choice: 4 -0.6
+	Choice: 5 -0.3
+	Choice: 6 0
+	Choice: 7 0.3
+	Choice: 8 0.6
+	Choice: 9 1.0
+	Choice: 10 1.3
+	Choice: 11 1.6
+	Choice: 12 2
+/main/capturesettings/picturestyle
+	Label: Picture Style
+	Type: RADIO
+	Current: Landscape
+	Choice: 0 Standard
+	Choice: 1 Portrait
+	Choice: 2 Landscape
+	Choice: 3 Neutral
+	Choice: 4 Faithful
+	Choice: 5 Monochrome
+	Choice: 6 User defined 1
+	Choice: 7 User defined 2
+	Choice: 8 User defined 3
+/main/capturesettings/aperture
+	Label: Aperture
+	Type: RADIO
+	Current: 2.8
+	Choice: 0 2.8
+	Choice: 1 3.2
+	Choice: 2 3.5
+	Choice: 3 4
+	Choice: 4 4.5
+	Choice: 5 5
+	Choice: 6 5.6
+	Choice: 7 6.3
+	Choice: 8 7.1
+	Choice: 9 8
+	Choice: 10 9
+	Choice: 11 10
+	Choice: 12 11
+	Choice: 13 13
+	Choice: 14 14
+	Choice: 15 16
+	Choice: 16 18
+	Choice: 17 20
+	Choice: 18 22
+	Choice: 19 25
+	Choice: 20 29
+	Choice: 21 32
+/main/other/d045
+	Label: Event Emulate Mode
+	Type: MENU
+	Current: 2
+	Choice: 0 1
+	Choice: 1 2
+	Choice: 2 3
+	Choice: 3 4
+	Choice: 4 5
+	Choice: 5 6
+	Choice: 6 7
+/main/other/d402
+	Label: PTP Property 0xd402
+	Type: TEXT
+	Current: Canon EOS 400D DIGITAL
+/main/other/d407
+	Label: PTP Property 0xd407
+	Type: TEXT
+	Current: 1
+/main/other/d406
+	Label: PTP Property 0xd406
+	Type: TEXT
+	Current: Unknown Initiator
+/main/other/d049
+	Label: Model ID
+	Type: TEXT
+	Current: -2147483082
+/main/other/d04a
+	Label: PTP Property 0xd04a
+	Type: MENU
+	Current: 0
+	Choice: 0 0
+	Choice: 1 1
+	Choice: 2 2
+	Choice: 3 3
+
+
+Notes:
+Auflösung ändern:
+    00000000: 0c 00 00 00 01 00 10 91 23 00 00 00
+    00000000: 28 00 00 00 02 00 10 91 23 00 00 00 1c 00 00 00
+L-HQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 00 00 00 00 03 00 00 00
+L-LQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 00 00 00 00 02 00 00 00
+M-HQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 01 00 00 00 03 00 00 00
+M-LQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 01 00 00 00 02 00 00 00
+S-HQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 02 00 00 00 03 00 00 00
+S-LQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 02 00 00 00 02 00 00 00
+RAW+L-HQ
+    00000010: 20 d1 00 00 02 00 00 00 10 00 00 00 06 00 00 00
+    00000020: 00 00 00 00 04 00 00 00 10 00 00 00 01 00 00 00
+    00000030: 00 00 00 00 03 00 00 00
+RAW 
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 06 00 00 00
+    00000020: 00 00 00 00 04 00 00 00
+
+Register: 0xd120
+Werte:
+DWORD: Anzahl der nachfolgenden Formatdefinitionen (1 oder 2)
+
+Formatdefinition:
+DWORD: Länge des Formats (0x10)
+DWORD: Format: JPG:0x01 RAW:0x06
+DWORD: Auflösung L/RAW:0x00 M:0x01 S:0x02
+DWORD: Qualität HQ:0x03 LQ:0x02 RAW:0x04
+
+================
+
+Picturestyle ändern:
+
+    00000000: 0c 00 00 00 01 00 10 91 99 00 00 00
+    00000000: 30 00 00 00 02 00 10 91 99 00 00 00 24 00 00 00
+    00000010: 50 d1 00 00 1c 00 00 00 01 00 00 00 03 00 00 00
+    00000020: 02 00 00 00 04 00 00 00 00 00 00 00 00 00 00 00
+
+Register:
+0xd150 (Standard)
+0xd151 (Portrait)
+0xd152 (Landscape)
+0xd153 (Neutral)
+0xd154 (Faithful)
+0xd155 (Monochrome)
+0xd160 (User Def. 1)
+0xd161 (User Def. 2)
+0xd162 (User Def. 3)
+DWORD: Länge des Style (0x1c)
+DWORD: Contrast -4 bis +4
+DWORD: Sharpness 0 bis 7
+DWORD: Saturation -4 bis +4
+DWORD: Color tone  -4 bis +4
+Wobei -1 wird durch 0xffffffff dargestellt.
+
+Bei Monochrome (0xd155) gilt:
+DWORD: Länge des Style (0x1c)
+DWORD: Contrast -4 bis +4
+DWORD: Sharpness 0 bis 7
+DWORD: Filter effect (None:0 Yellow:1 Orange:2 Red:3 Green:4)
+DWORD: Toning effect (None:0 Sepia:1 Blue:2 Purple:3 Green:4)
+
+================
+
+WB-Shift Blue/Amber
+    00000000: 0c 00 00 00 01 00 10 91 45 0a 00 00
+    00000000: 18 00 00 00 02 00 10 91 45 0a 00 00 0c 00 00 00
+    00000010: 0b d1 00 00 01 00 00 00
+Register 0xd10b  
+Wertebereich: -9 bis +9
+DWORD: (0xfffffff7 bis 0x9)
+
+================ 
+
+WB-Shift Magenta/Green
+    00000000: 0c 00 00 00 01 00 10 91 46 0a 00 00
+    00000000: 18 00 00 00 02 00 10 91 46 0a 00 00 0c 00 00 00
+    00000010: 0c d1 00 00 00 00 00 00
+Register 0xd10c
+Wertebereich: -9 bis +9 
+DWORD: (0xfffffff7 bis 0x9)
+
+
+0xd101: Av
+0xd102: Tv
+0xd103: ISO
+0xd104: Exposure
+0xd107: AE-Metering
+0xd109: AWB
+0xd10b: WB-Shift Blue/Amber
+0xd10c: WB-Shift Magenta/Green
+0xd110: Set Picture Style
+0xd113: Clock
+0xd115: Owner Name
+0xd120: Format/Resolution/Quality
+0xd150: Picturestyle
+0xd151: Picturestyle
+0xd152: Picturestyle
+0xd153: Picturestyle
+0xd154: Picturestyle
+0xd155: Picturestyle
+0xd160: Picturestyle
+0xd161: Picturestyle
+0xd162: Picturestyle
+
+
+Format CF:
+    00000000: 10 00 00 00 01 00 06 91 2c 00 00 00 01 00 00 00
+
+=====================
+
+Aperture Value:
+
+   00000000: 0c 00 00 00 01 00 10 91 be 08 00 00
+   00000000: 18 00 00 00 02 00 10 91 be 08 00 00 0c 00 00 00
+   00000010: 01 d1 00 00 50 00 00 00
+
+Register: 0xd101
+Value Range: 0x25-0x50
+DWORD: Table:
+22: 0x50
+20: 0x4d
+18: 0x4b
+16: 0x48
+14: 0x45
+13: 0x43
+11: 0x40
+10: 0x3d
+9: 0x3b
+8: 0x38
+7,1: 0x35
+6,3: 0x33
+5,6: 0x30
+5,0: 0x2d
+4,5: 0x2b
+4: 0x28
+3,5: 0x25
+
+=====================
+
+Shutter Speed:
+
+  00000000: 0c 00 00 00 01 00 10 91 59 01 00 00
+  00000000: 18 00 00 00 02 00 10 91 59 01 00 00 0c 00 00 00
+  00000010: 02 d1 00 00 73 00 00 00
+
+Register: 0xd102
+Value Range: 0x1b-0x98
+DWORD: Table:
+30": 0x10
+25": 0x13
+20": 0x15
+15": 0x18
+13": 0x1b
+10": 0x1d
+
+8": 0x20
+6": 0x23
+5": 0x25
+4": 0x28
+3,2": 0x2b
+2,5": 0x2d
+
+2": 0x30
+1,6": 0x33
+1,3": 0x35
+1": 0x38
+0,8": 0x3b
+0,6": 0x3d
+
+0,5": 0x40
+0,4": 0x43
+0,3": 0x45
+4: 0x48
+5: 0x4b
+6: 0x4d
+
+8: 0x50
+10: 0x53
+13: 0x55
+15: 0x58
+20: 0x5b
+25: 0x5d
+
+30: 0x60
+40: 0x63
+50: 0x65
+60: 0x68
+80: 0x6b
+100: 0x6d
+
+125: 0x70
+160: 0x73
+200: 0x75
+250: 0x78
+320: 0x7b
+400: 0x7d
+
+500: 0x80
+640: 0x83
+800: 0x85
+1000: 0x88
+1250: 0x8b
+1600: 0x8d
+
+2000: 0x90
+2500: 0x93
+3200: 0x95
+4000: 0x98
+
+============================
+
+ISO Value:
+    00000000: 0c 00 00 00 01 00 10 91 36 00 00 00
+    00000000: 18 00 00 00 02 00 10 91 36 00 00 00 0c 00 00 00
+    00000010: 03 d1 00 00 68 00 00 00
+
+Register: 0xd103
+Value Range: 100,200,400,800,1600
+DWORD: Table:
+100:0x48
+200:0x50
+400:0x58
+800:0x60
+1600:0x68
+
+============================
+
+Exposure Value:
+
+   00000000: 18 00 00 00 02 00 10 91 41 00 00 00 0c 00 00 00
+   00000010: 04 d1 00 00 f8 00 00 00
+
+Register: 0xd104
+Value Range: -2 to +2
+Table:
++2.0:0x10
++1.6:0x0d
++1.5:0x0c
++1.3:0x0b
++1.0:0x08
++0.6:0x05
++0.5:0x04
++0.3:0x03
+ 0.0:0x00
+-0.3:0xfd
+-0.5:0xfc
+-0.6:0xfb
+-1.0:0xf8
+-1.3:0xf5
+-1.5:0xf4
+-1.6:0xf3
+-2.0:0xf0
+
+============================
+
+AE Metering:
+
+    00000000: 0c 00 00 00 01 00 10 91 2c 00 00 00
+    00000000: 18 00 00 00 02 00 10 91 2c 00 00 00 0c 00 00 00
+    00000010: 07 d1 00 00 04 00 00 00
+
+Register: 0xd107
+Value Range: 3-5
+DWORD: Table:
+Evaluative Metering: 0x03
+Partial Metering: 0x04
+Center Weighted average metering: 0x05
+
+============================
+
+Auto White Balance:
+    00000000: 0c 00 00 00 01 00 10 91 2a 00 00 00
+    00000000: 18 00 00 00 02 00 10 91 2a 00 00 00 0c 00 00 00
+    00000010: 09 d1 00 00 08 00 00 00
+
+Register: 0xd109
+Value Range: 0-7,8
+DWORD: Table
+Auto: 0x00
+Daylight: 0x01
+Shade: 0x02
+Cloudy: 0x03
+Tungsten Light: 0x04
+White fluorescent light: 0x05
+Flash: 0x06
+Custom: 0x08
+
+================
+WB-Shift Blue/Amber
+    00000000: 0c 00 00 00 01 00 10 91 45 0a 00 00
+    00000000: 18 00 00 00 02 00 10 91 45 0a 00 00 0c 00 00 00
+    00000010: 0b d1 00 00 01 00 00 00
+Register: 0xd10b
+Value Range: -9 to +9
+DWORD: (0xfffffff7 to 0x9)
+
+================
+
+WB-Shift Magenta/Green
+    00000000: 0c 00 00 00 01 00 10 91 46 0a 00 00
+    00000000: 18 00 00 00 02 00 10 91 46 0a 00 00 0c 00 00 00
+    00000010: 0c d1 00 00 00 00 00 00
+
+Register: 0xd10c
+Value Range: -9 to +9
+DWORD: (0xfffffff7 to 0x9)
+
+================
+
+Set Picture Style:
+    00000000: 0c 00 00 00 01 00 10 91 27 00 00 00
+    00000000: 18 00 00 00 02 00 10 91 27 00 00 00 0c 00 00 00
+    00000010: 10 d1 00 00 82 00 00 00
+
+Register: 0xd110
+Value Range:
+Standard: 0x81
+Portrait: 0x82
+Landscape: 0x83
+Neutral: 0x84
+Faithful: 0x85
+Monochrome: 0x86
+User Def. 1: 0x21
+User Def. 2: 0x22
+User Def. 3: 0x23
+
+============================
+
+Time and Date:
+    00000000: 0c 00 00 00 01 00 10 91 43 00 00 00
+    00000000: 18 00 00 00 02 00 10 91 43 00 00 00 0c 00 00 00
+    00000010: 13 d1 00 00 ee 2a 68 46
+
+Register: 0xd113
+Value Range: Unixtime=time(NULL)
+
+============================
+
+Owner Name:
+    00000000: 0c 00 00 00 01 00 10 91 34 00 00 00
+    00000000: 30 00 00 00 02 00 10 91 34 00 00 00 24 00 00 00
+    00000010: 15 d1 00 00 44 65 74 69 20 46 6c 69 65 67 6c 20
+    00000020: 30 30 34 39 31 35 31 31 37 38 36 37 34 38 30 00
+
+Register: 0xd115
+Parameter: ASCII String
+
+=====================
+
+Quality:
+    00000000: 0c 00 00 00 01 00 10 91 23 00 00 00
+    00000000: 28 00 00 00 02 00 10 91 23 00 00 00 1c 00 00 00
+L-HQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 00 00 00 00 03 00 00 00
+L-LQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 00 00 00 00 02 00 00 00
+M-HQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 01 00 00 00 03 00 00 00
+M-LQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 01 00 00 00 02 00 00 00
+S-HQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 02 00 00 00 03 00 00 00
+S-LQ
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 01 00 00 00
+    00000020: 02 00 00 00 02 00 00 00
+RAW+L-HQ
+    00000010: 20 d1 00 00 02 00 00 00 10 00 00 00 06 00 00 00
+    00000020: 00 00 00 00 04 00 00 00 10 00 00 00 01 00 00 00
+    00000030: 00 00 00 00 03 00 00 00
+RAW
+    00000010: 20 d1 00 00 01 00 00 00 10 00 00 00 06 00 00 00
+    00000020: 00 00 00 00 04 00 00 00
+
+Register: 0xd120
+Values:
+DWORD: Number of subsequent format definitions (1 oder 2)
+
+Format definition:
+DWORD: Length of Format (0x10)
+DWORD: Format: JPG:0x01 RAW:0x06
+DWORD: Resolution L/RAW:0x00 M:0x01 S:0x02
+DWORD: Quality HQ:0x03 LQ:0x02 RAW:0x04
+
+================
+
+Edit Picturestyle:
+
+    00000000: 0c 00 00 00 01 00 10 91 99 00 00 00
+    00000000: 30 00 00 00 02 00 10 91 99 00 00 00 24 00 00 00
+    00000010: 50 d1 00 00 1c 00 00 00 01 00 00 00 03 00 00 00
+    00000020: 02 00 00 00 04 00 00 00 00 00 00 00 00 00 00 00
+
+Register:
+0xd150 (Standard)
+0xd151 (Portrait)
+0xd152 (Landscape)
+0xd153 (Neutral)
+0xd154 (Faithful)
+0xd155 (Monochrome)
+0xd160 (User Def. 1)
+0xd161 (User Def. 2)
+0xd162 (User Def. 3)
+
+DWORD: Length of style (0x1c)
+DWORD: Contrast -4 to +4
+DWORD: Sharpness 0 to 7
+DWORD: Saturation -4 to +4
+DWORD: Color tone  -4 to +4
+Value -1 is expressed by 0xffffffff
+
+For Monochrome (0xd155) the settings differ:
+DWORD: Length of Style (0x1c)
+DWORD: Contrast -4 to +4
+DWORD: Sharpness 0 to 7
+DWORD: Filter effect (None:0 Yellow:1 Orange:2 Red:3 Green:4)
+DWORD: Toning effect (None:0 Sepia:1 Blue:2 Purple:3 Green:4)
+
+================
+
+Das steht am Bildschirm bei 1600ISO - brauchst du noch ein Logfile? Noch
+was: Wenn keine Speicherkarte in der Kamera ist, dann gibt's ein Segfault.
+
+ value on, t 1
+unknown EOS property type c18e
+unknown EOS property type c18e
+unknown EOS property type c18e
+Adding EOS property d103, datasize is 4
+Adding EOS property d11b, datasize is 4
+Adding EOS property d11b, datasize is 4
+unknown EOS property type c18e
+unknown EOS property type c18e
+Adding EOS property d103, datasize is 4
+Adding EOS property d11b, datasize is 4
+Adding EOS property d11b, datasize is 4
+unknown EOS property type c18e
+unknown EOS property type c18e
+unknown EOS property type c18e
+unknown EOS property type c18e
+unknown EOS property type c18e
+Adding EOS property d103, datasize is 4
+Adding EOS property d11b, datasize is 4
+Adding EOS property d11b, datasize is 4
+unknown EOS property type c18e
+unknown EOS property type c18e
+Adding EOS property d103, datasize is 4
+Adding EOS property d11b, datasize is 4
+Adding EOS property d11b, datasize is 4
+unknown EOS property type c18e
+unknown EOS property type c18e
+Adding EOS property d103, datasize is 4
+Adding EOS property d11b, datasize is 4
+Adding EOS property d11b, datasize is 4
+unknown EOS property type c18e
+unknown EOS property type c18e
+Adding EOS property d103, datasize is 4
+Adding EOS property d11b, datasize is 4
+Adding EOS property d11b, datasize is 4
+unknown EOS property type c18e
+unknown EOS property type c18e
+unknown EOS property type c18e
+Adding EOS property d102, datasize is 4
+Adding EOS property d101, datasize is 4
+Adding EOS property d103, datasize is 4
+Adding EOS property d106, datasize is 4
+Adding EOS property d108, datasize is 4
+Adding EOS property d107, datasize is 4
+Adding EOS property d109, datasize is 4
+Adding EOS property d105, datasize is 4
+Adding EOS property d11b, datasize is 4
+Adding EOS property d104, datasize is 4
+Adding EOS property d112, datasize is 4
+Adding EOS property d111, datasize is 4
+Adding EOS property d10c, datasize is 4
+Adding EOS property d10b, datasize is 4
+Adding EOS property d10d, datasize is 4
+Adding EOS property d10e, datasize is 4
+Adding EOS property d10f, datasize is 4
+Adding EOS property d114, datasize is 4
+Adding EOS property d11a, datasize is 4
+Adding EOS property d115, datasize is 28
+Adding EOS property d119, datasize is 4
+Adding EOS property d116, datasize is 4
+Adding EOS property d11d, datasize is 4
+Adding EOS property d180, datasize is 5
+Adding EOS property d181, datasize is 5
+Adding EOS property d182, datasize is 5
+Adding EOS property d183, datasize is 5
+Adding EOS property d184, datasize is 5
+Adding EOS property d185, datasize is 5
+Adding EOS property d186, datasize is 5
+Adding EOS property d187, datasize is 5
+Adding EOS property d188, datasize is 5
+Adding EOS property d189, datasize is 5
+Adding EOS property d18a, datasize is 5
+Adding EOS property d110, datasize is 4
+Adding EOS property d150, datasize is 28
+Adding EOS property d151, datasize is 28
+Adding EOS property d152, datasize is 28
+Adding EOS property d153, datasize is 28
+Adding EOS property d154, datasize is 28
+Adding EOS property d155, datasize is 28
+Adding EOS property d160, datasize is 32
+Adding EOS property d161, datasize is 32
+Adding EOS property d162, datasize is 32
+Adding EOS property d170, datasize is 8
+Adding EOS property d171, datasize is 8
+Adding EOS property d172, datasize is 8
+Adding EOS property d113, datasize is 4
+Adding EOS property d11c, datasize is 4
+Adding EOS property d120, datasize is 20
+Adding EOS property d107, datasize is 20
+Adding EOS property d108, datasize is 20
+Adding EOS property d109, datasize is 40
+Adding EOS property d103, datasize is 28
+Adding EOS property d102, datasize is 8
+Adding EOS property d101, datasize is 8
+Adding EOS property d10b, datasize is 84
+Adding EOS property d10c, datasize is 84
+Adding EOS property d104, datasize is 60
+Adding EOS property d10f, datasize is 16
+Adding EOS property d110, datasize is 44
+Adding EOS property d11c, datasize is 20
+Adding EOS property d120, datasize is 184
+Adding EOS property d106, datasize is 8
+Adding EOS property d105, datasize is 8
+Adding EOS property d10d, datasize is 8
+Adding EOS property d10e, datasize is 8
+Adding EOS property d11b, datasize is 8
+Adding EOS property d114, datasize is 8
+Adding EOS property d116, datasize is 8
+Adding EOS property d119, datasize is 8
+Adding EOS property d11a, datasize is 8 
+Adding EOS property d112, datasize is 8 
+Adding EOS property d111, datasize is 8 
+Adding EOS property d11d, datasize is 8
+Adding EOS property d115, datasize is 8
+Adding EOS property d180, datasize is 8
+Adding EOS property d181, datasize is 8
+Adding EOS property d182, datasize is 8
+Adding EOS property d183, datasize is 8 
+Adding EOS property d184, datasize is 8 
+Adding EOS property d185, datasize is 8 
+Adding EOS property d186, datasize is 8 
+Adding EOS property d187, datasize is 8
+Adding EOS property d188, datasize is 8
+Adding EOS property d189, datasize is 8
+Adding EOS property d18a, datasize is 8 
+Adding EOS property d150, datasize is 8 
+Adding EOS property d151, datasize is 8 
+Adding EOS property d152, datasize is 8 
+Adding EOS property d153, datasize is 8 
+Adding EOS property d154, datasize is 8 
+Adding EOS property d155, datasize is 8  
+Adding EOS property d160, datasize is 8
+Adding EOS property d161, datasize is 8
+Adding EOS property d162, datasize is 8
+Adding EOS property d170, datasize is 8
+Adding EOS property d171, datasize is 8
+Adding EOS property d172, datasize is 8
+Adding EOS property d113, datasize is 8
+unknown EOS property type 0000
+unknown EOS property type 0000
+Adding EOS property d11b, datasize is 4
+Adding EOS property d11b, datasize is 4
+Adding EOS property d11c, datasize is 4
+Adding EOS property d11b, datasize is 4
+unknown EOS property type 0000
+unknown EOS property type 0000
+currentvalue is 3
+currentvalue is 3
+currentvalue is 3
+currentvalue is 3
+/main/settings/capturetarget
+/main/settings/capture
+/main/imgsettings/iso
+/main/capturesettings/exposurecompensation
+/main/capturesettings/aperture
+/main/capturesettings/shutterspeed
+/main/capturesettings/focuslock
+currentvalue is 3
+currentvalue is 3
+currentvalue is 3
+currentvalue is 3
+Label: ISO Speed
+Type: RADIO
+Current: (null)
+Choice: 0 Factory Default
+Choice: 1 50
+Choice: 2 100
+Choice: 3 200
+Choice: 4 400
+Choice: 5 800
+Choice: 6 1600
+Choice: 7 Auto
+
+MARCUS:
+30.106163 gphoto2-port(3): Hexdump of 80 = 0x50 bytes follows:
+0000  50 00 00 00 02 00 16 91-0b 07 00 00 3c 00 00 00  P...........<...
+0010  81 c1 00 00 52 63 94 31-01 00 01 00 01 38 00 00  ....Rc.1.....8..
+0020  00 00 00 00 20 00 00 00-85 41 27 00 00 00 94 31  .... ....A'....1
+0030  50 63 94 31 49 4d 47 5f-31 35 38 39 2e 4a 50 47  Pc.1IMG_1589.JPG
+0040  00 00 00 00 f8 d2 ed 49-08 00 00 00 00 00 00 00  .......I........
+
+30.111620 ptp(2): event 0: unknown EOS event c182
+30.111650 ptp(2):     8: 52 63 94 31		uint32_t	objectid
+30.111755 ptp(2):     12: 01 00 01 00		uint32_t	storageid
+30.111859 ptp(2):     16: 01 38			uint16_t	ofc
+30.111912 ptp(2):     18: 00
+30.111937 ptp(2):     19: 00
+
+30.111963 ptp(2):     20: 00
+30.111989 ptp(2):     21: 00
+30.112015 ptp(2):     22: 00
+30.112041 ptp(2):     23: 00
+
+30.112067 ptp(2):     24: 20
+30.112093 ptp(2):     25: 00
+30.112119 ptp(2):     26: 00
+30.112145 ptp(2):     27: 00
+30.112171 ptp(2):     28: 85 41 27 00		uint32_t	compressedsize
+30.112297 ptp(2):     32: 00 00 94 31		uint32_t	parentid
+30.112399 ptp(2):     36: 50 63 94 31		uint32_t	obid again?
+30.112502 ptp(2):     40: 49			IMG_1589.JPG... 
+30.112839 ptp(2):     53: 00
+30.112865 ptp(2):     54: 00
+30.112891 ptp(2):     55: 00
+30.112917 ptp(2):     56: f8 d2 ed 49		?
