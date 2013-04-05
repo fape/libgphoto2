@@ -1,0 +1,12 @@
+Makefile.in
+Makefile
+test-ddb
+.libs
+.deps
+*.o
+ddb-txt.yy.c
+ddb-txt.tab.c
+ddb-txt.tab.h
+ddb-txt.output
+check-ddb.sh
+

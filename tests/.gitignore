@@ -1,0 +1,12 @@
+check-camera-list.sh
+.deps
+.libs
+Makefile
+Makefile.in
+*.o
+test-camera-list
+test-filesys
+test-gphoto2
+test-pedantic-c
+test-pedantic-cxx
+

@@ -1,0 +1,15 @@
+.*~
+*~
+*.ced
+Doxyfile
+Doxyfile-internals
+doxygen-output
+doxygen-output.stamp
+figures-stamp
+libgphoto2-api.html.stamp
+Makefile
+Makefile.in
+manual
+*.pdf
+txt
+

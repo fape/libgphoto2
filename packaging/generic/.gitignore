@@ -1,0 +1,7 @@
+*~
+.*~
+Makefile
+Makefile.in
+.deps
+.libs
+print-camera-list
