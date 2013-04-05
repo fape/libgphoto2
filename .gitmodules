@@ -1,0 +1,6 @@
+[submodule "m4m"]
+	path = m4m
+	url = https://github.com/fape/gphoto2-m4.git
+[submodule "libgphoto2_port/m4"]
+	path = libgphoto2_port/m4
+	url = https://github.com/fape/gphoto2-m4.git
