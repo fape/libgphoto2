@@ -419,6 +419,10 @@ typedef struct _PTPIPHeader PTPIPHeader;
 #define PTP_OC_NIKON_MfDrive		0x9204
 #define PTP_OC_NIKON_ChangeAfArea	0x9205
 #define PTP_OC_NIKON_AfDriveCancel	0x9206
+#define PTP_OC_NIKON_InitiateCaptureRecInMedia	0x9207
+
+#define PTP_OC_NIKON_StartMovieRecInCard	0x920a
+#define PTP_OC_NIKON_EndMovieRec	0x920b
 
 #define PTP_OC_NIKON_GetDevicePTPIPInfo	0x90E0
 
@@ -2743,6 +2747,28 @@ uint16_t ptp_nikon_writewifiprofile (PTPParams* params, PTPNIKONWifiProfile* pro
  *
  **/
 #define ptp_nikon_afdrive(params) ptp_generic_no_data(params,PTP_OC_NIKON_AfDrive,0)
+/**
+ * ptp_nikon_startmovie:
+ *
+ * This command starts movie capture (to card)
+ *  
+ * params:      PTPParams*
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+#define ptp_nikon_startmovie(params) ptp_generic_no_data(params,PTP_OC_NIKON_StartMovieRecInCard,0)
+/**
+ * ptp_nikon_stopmovie:
+ *
+ * This command stops movie capture (to card)
+ *  
+ * params:      PTPParams*
+ *
+ * Return values: Some PTP_RC_* code.
+ *
+ **/
+#define ptp_nikon_stopmovie(params) ptp_generic_no_data(params,PTP_OC_NIKON_EndMovieRec,0)
 /**
  * ptp_canon_eos_afdrive:
  *
