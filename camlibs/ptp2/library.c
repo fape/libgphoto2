@@ -1359,6 +1359,9 @@ static struct {
 
 	/* "T. Ludewig" <t.ludewig@gmail.com> */
 	{"Canon:PowerShot G1 X",		0x04a9, 0x3233, PTPBUG_DELETE_SENDS_EVENT},
+	/* IRC reporter */
+	{"Canon:PowerShot S100",		0x04a9, 0x3236, PTPBUG_DELETE_SENDS_EVENT},
+	/* "T. Ludewig" <t.ludewig@gmail.com> */
 	{"Canon:PowerShot SX40HS",		0x04a9, 0x3238, PTPBUG_DELETE_SENDS_EVENT},
 	/* Axel Waggershauser <awagger@web.de> */
 	{"Canon:EOS 5D Mark III",		0x04a9, 0x323a, PTP_CAP|PTP_CAP_PREVIEW|PTPBUG_DELETE_SENDS_EVENT},
@@ -3246,6 +3249,11 @@ camera_wait_for_event (Camera *camera, int timeout,
 		while (1) {
 			int i;
 			PTPCanon_changes_entry	entry;
+
+			/* keep device alive */
+			ret = ptp_canon_eos_keepdeviceon (params);
+			if (ret != PTP_RC_OK)
+				return translate_ptp_result (ret);
 
 			ret = ptp_check_eos_events (params);
 			if (ret != PTP_RC_OK) {
@@ -6077,6 +6085,7 @@ ptp_list_folder_eos (PTPParams *params, uint32_t storage, uint32_t handle) {
 		);
 		if (ret != PTP_RC_OK) {
 			gp_log (GP_LOG_DEBUG, "ptp2/eos_directory", "reading directory failed: %04x", ret);
+			free (storageids.Storage);
 			return ret;
 		}
 		/* convert read entries into objectinfos */
@@ -6142,7 +6151,7 @@ ptp_list_folder_eos (PTPParams *params, uint32_t storage, uint32_t handle) {
 		if (ret == PTP_RC_OK)
 			ob->flags |= PTPOBJECT_DIRECTORY_LOADED;
 	}
-
+	free (storageids.Storage);
 	return PTP_RC_OK;
 }
 
