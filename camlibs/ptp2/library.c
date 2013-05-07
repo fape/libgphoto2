@@ -1390,6 +1390,8 @@ static struct {
 	/* "T. Ludewig" <t.ludewig@gmail.com> */
 	{"Canon:PowerShot SX500IS",		0x04a9, 0x325c, PTPBUG_DELETE_SENDS_EVENT},
 	/* "T. Ludewig" <t.ludewig@gmail.com> */
+	{"Canon:EOS 100D",			0x04a9, 0x3270, PTP_CAP|PTP_CAP_PREVIEW},
+	/* "T. Ludewig" <t.ludewig@gmail.com> */
 	{"Canon:EOS 700D",			0x04a9, 0x3272, PTP_CAP|PTP_CAP_PREVIEW},
 
 	/* Konica-Minolta PTP cameras */
@@ -2436,6 +2438,10 @@ camera_canon_eos_capture (Camera *camera, CameraCaptureType type, CameraFilePath
 	gp_log (GP_LOG_DEBUG, "ptp2/canon_eos_capture", "result is %d", result);
 	if (result == 1) {
 		gp_context_error (context, _("Canon EOS Capture failed to release: Perhaps no focus?"));
+		return GP_ERROR;
+	}
+	if (result == 3) {
+		gp_context_error (context, _("Canon EOS Capture failed to release: Perhaps mirror up?"));
 		return GP_ERROR;
 	}
 	if (result == 7) {
