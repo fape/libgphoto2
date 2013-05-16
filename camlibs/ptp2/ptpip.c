@@ -90,7 +90,10 @@
 #define ptpip_cmd_param4	30
 #define ptpip_cmd_param5	34
 
+#define PTP_EVENT_CHECK			0x0000	/* waits for */
+#define PTP_EVENT_CHECK_FAST		0x0001	/* checks */
 static uint16_t ptp_ptpip_check_event (PTPParams* params);
+static uint16_t ptp_ptpip_event (PTPParams* params, PTPContainer* event, int wait);
 
 /* send / receive functions */
 uint16_t
@@ -194,23 +197,16 @@ ptp_ptpip_evt_read (PTPParams* params, PTPIPHeader *hdr, unsigned char** data) {
 
 static uint16_t
 ptp_ptpip_check_event (PTPParams* params) {
-	fd_set		infds;
-	struct timeval	timeout;
-	int ret;
-	unsigned char*	data = NULL;
-	PTPIPHeader	hdr;
+	PTPContainer	event;
+	uint16_t	ret;
 
-	FD_ZERO(&infds);
-	FD_SET(params->evtfd, &infds);
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 1;
-	if (1 != select (params->evtfd+1, &infds, NULL, NULL, &timeout))
-		return PTP_RC_OK;
-	ret = ptp_ptpip_evt_read (params, &hdr, &data);
+	event.Code = 0;
+	ret = ptp_ptpip_event (params, &event, PTP_EVENT_CHECK_FAST);
 	if (ret != PTP_RC_OK)
 		return ret;
-	gp_log (GP_LOG_DEBUG,"ptpip/check_event", "hdr type %d, length %d", hdr.type, hdr.length);
-	return PTP_RC_OK;
+	if (event.Code == 0)
+		return ret;
+	return ptp_add_event (params, &event);
 }
 
 #define ptpip_startdata_transid		0
@@ -383,7 +379,7 @@ ptp_ptpip_getresp (PTPParams* params, PTPContainer* resp)
 
 	resp->Code		= dtoh16a(&data[ptpip_resp_code]);
 	resp->Transaction_ID	= dtoh32a(&data[ptpip_resp_transid]);
-	n = (dtoh32(hdr.length) - ptpip_resp_param1)/sizeof(uint32_t);
+	n = (dtoh32(hdr.length) - sizeof(hdr) - ptpip_resp_param1)/sizeof(uint32_t);
 	switch (n) {
 	case 5: resp->Param5 = dtoh32a(&data[ptpip_resp_param5]);
 	case 4: resp->Param4 = dtoh32a(&data[ptpip_resp_param4]);
@@ -521,13 +517,63 @@ ptp_ptpip_init_event_ack (PTPParams* params)
 /* Event handling functions */
 
 /* PTP Events wait for or check mode */
-#define PTP_EVENT_CHECK			0x0000	/* waits for */
-#define PTP_EVENT_CHECK_FAST		0x0001	/* checks */
 
-static inline uint16_t
+#define ptpip_event_code    0
+#define ptpip_event_transid	2
+#define ptpip_event_param1	6
+#define ptpip_event_param2	10
+#define ptpip_event_param3	14
+
+static uint16_t
 ptp_ptpip_event (PTPParams* params, PTPContainer* event, int wait)
 {
-	fprintf(stderr,"event()\n");
+	fd_set		infds;
+	struct timeval	timeout;
+	int ret;
+	unsigned char*	data = NULL;
+	PTPIPHeader	hdr;
+	int n;
+
+	while (1) {
+		FD_ZERO(&infds);
+		FD_SET(params->evtfd, &infds);
+		timeout.tv_sec = 0;
+		if (wait == PTP_EVENT_CHECK_FAST)
+			timeout.tv_usec = 1;
+		else
+			timeout.tv_usec = 1000; /* 1/1000 second  .. perhaps wait longer? */
+
+		if (1 != select (params->evtfd+1, &infds, NULL, NULL, &timeout))
+			return PTP_RC_OK;
+
+		ret = ptp_ptpip_evt_read (params, &hdr, &data);
+		if (ret != PTP_RC_OK)
+			return ret;
+		gp_log (GP_LOG_DEBUG,"ptpip/event", "hdr type %d, length %d", hdr.type, hdr.length);
+
+		if (dtoh32(hdr.type) == PTPIP_EVENT) {
+			break;
+		}
+
+		/* TODO: Handle cancel transaction and ping/pong
+		 * If not PTPIP_EVENT, process it and wait for next PTPIP_EVENT
+		 */
+		gp_log (GP_LOG_ERROR, "ptpip/event", "unknown/unhandled event type %d", dtoh32(hdr.type));
+	}
+
+	event->Code		= dtoh16a(&data[ptpip_event_code]);
+	event->Transaction_ID	= dtoh32a(&data[ptpip_event_transid]);
+	n = (dtoh32(hdr.length) - sizeof(hdr) - ptpip_event_param1)/sizeof(uint32_t);
+	switch (n) {
+	case 3: event->Param3 = dtoh32a(&data[ptpip_event_param3]);
+	case 2: event->Param2 = dtoh32a(&data[ptpip_event_param2]);
+	case 1: event->Param1 = dtoh32a(&data[ptpip_event_param1]);
+	case 0: break;
+	default:
+		gp_log( GP_LOG_ERROR, "ptpip/event", "response got %d parameters?", n);
+		break;
+	}
+	free (data);
 	return PTP_RC_OK;
 }
 
@@ -656,18 +702,18 @@ ptp_ptpip_connect (PTPParams* params, const char *address) {
 		close (params->evtfd);
 		return GP_ERROR_IO;
 	}
-	ret = ptp_ptpip_init_command_request (params);
-	if (ret != PTP_RC_OK)
-		return translate_ptp_result (ret);
-	ret = ptp_ptpip_init_command_ack (params);
-	if (ret != PTP_RC_OK)
-		return translate_ptp_result (ret);
 	if (-1 == connect (params->evtfd, (struct sockaddr*)&saddr, sizeof(struct sockaddr_in))) {
 		perror ("connect evt");
 		close (params->cmdfd);
 		close (params->evtfd);
 		return GP_ERROR_IO;
 	}
+	ret = ptp_ptpip_init_command_request (params);
+	if (ret != PTP_RC_OK)
+		return translate_ptp_result (ret);
+	ret = ptp_ptpip_init_command_ack (params);
+	if (ret != PTP_RC_OK)
+		return translate_ptp_result (ret);
 	ret = ptp_ptpip_init_event_request (params);
 	if (ret != PTP_RC_OK)
 		return translate_ptp_result (ret);
