@@ -4118,6 +4118,56 @@ _put_Nikon_AFDrive(CONFIG_PUT_ARGS) {
 }
 
 static int
+_get_Nikon_ChangeAfArea(CONFIG_GET_ARGS) {
+	gp_widget_new (GP_WIDGET_TEXT, _(menu->label), widget);
+	gp_widget_set_name (*widget,menu->name);
+
+	gp_widget_set_value (*widget,"0x0");
+	return (GP_OK);
+}
+
+static int
+_put_Nikon_ChangeAfArea(CONFIG_PUT_ARGS) {
+	uint16_t	ret;
+	char		*val;
+	int		x,y;
+	PTPParams	*params = &(camera->pl->params);
+	GPContext 	*context = ((PTPData *) params->data)->context;
+
+	ret = gp_widget_get_value(widget, &val);
+	if (ret != GP_OK)
+		return ret;
+
+	if (2 != sscanf(val, "%dx%d", &x, &y))
+		return GP_ERROR_BAD_PARAMETERS;
+
+	ret = ptp_nikon_changeafarea (&camera->pl->params, x, y);
+	if (ret == PTP_RC_NIKON_NotLiveView) {
+		gp_context_error (context, _("Nikon changeafarea works only in LiveView mode."));
+		return GP_ERROR;
+	}
+
+	if (ret != PTP_RC_OK) {
+		gp_log (GP_LOG_DEBUG, "ptp2/changeafarea", "Nikon changeafarea failed: 0x%x", ret);
+		return translate_ptp_result (ret);
+	}
+#if 0
+	int		tries = 0;
+	/* wait at most 5 seconds for focusing currently */
+	while (PTP_RC_DeviceBusy == (ret = ptp_nikon_device_ready(&camera->pl->params))) {
+		tries++;
+		if (tries == 500)
+			return GP_ERROR_CAMERA_BUSY;
+		usleep(10*1000);
+	}
+	/* this can return PTP_RC_OK or PTP_RC_NIKON_OutOfFocus */
+	if (ret == PTP_RC_NIKON_OutOfFocus)
+		gp_context_error (context, _("Nikon autofocus drive did not focus."));
+#endif
+	return translate_ptp_result (ret);
+}
+
+static int
 _get_Canon_EOS_AFDrive(CONFIG_GET_ARGS) {
 	gp_widget_new (GP_WIDGET_TOGGLE, _(menu->label), widget);
 	gp_widget_set_name (*widget,menu->name);
@@ -4160,6 +4210,8 @@ _put_Nikon_MFDrive(CONFIG_PUT_ARGS) {
 	uint16_t	ret;
 	float		val;
 	unsigned int	xval, flag;
+	PTPParams	*params = &(camera->pl->params);
+	GPContext 	*context = ((PTPData *) params->data)->context;
 
 	if (!ptp_operation_issupported(&camera->pl->params, PTP_OC_NIKON_MfDrive)) 
 		return (GP_ERROR_NOT_SUPPORTED);
@@ -4174,12 +4226,31 @@ _put_Nikon_MFDrive(CONFIG_PUT_ARGS) {
 	}
 	if (!xval) xval = 1;
 	ret = ptp_nikon_mfdrive (&camera->pl->params, flag, xval);
+	if (ret == PTP_RC_NIKON_NotLiveView) {
+		gp_context_error (context, _("Nikon manual focus works only in LiveView mode."));
+		return GP_ERROR;
+	}
+
 	if (ret != PTP_RC_OK) {
 		gp_log (GP_LOG_DEBUG, "ptp2/nikon_mfdrive", "Nikon manual focus drive failed: 0x%x", ret);
 		return translate_ptp_result (ret);
 	}
-	while (PTP_RC_DeviceBusy == ptp_nikon_device_ready(&camera->pl->params));
-	return GP_OK;
+
+	/* The mf drive operation has started ... wait for it to
+	 * finish. */
+	do {
+		ret = ptp_nikon_device_ready(&camera->pl->params);
+	} while (ret == PTP_RC_DeviceBusy);
+
+	if (ret == PTP_RC_NIKON_MfDriveStepEnd) {
+		gp_context_error (context, _("Nikon manual focus at limit."));
+		return GP_ERROR_CAMERA_ERROR;
+	}
+	if (ret == PTP_RC_NIKON_MfDriveStepInsufficiency) {
+		gp_context_error (context, _("Nikon manual focus stepping too small."));
+		return GP_ERROR_CAMERA_ERROR;
+	}
+	return translate_ptp_result(ret);
 }
 
 static int
@@ -5452,6 +5523,7 @@ static struct submenu camera_actions_menu[] = {
 	{ N_("Drive Nikon DSLR Autofocus"),	"autofocusdrive", 0, PTP_VENDOR_NIKON, PTP_OC_NIKON_AfDrive, _get_Nikon_AFDrive, _put_Nikon_AFDrive },
 	{ N_("Drive Canon DSLR Autofocus"),	"autofocusdrive", 0, PTP_VENDOR_CANON, PTP_OC_CANON_EOS_DoAf, _get_Canon_EOS_AFDrive, _put_Canon_EOS_AFDrive },
 	{ N_("Drive Nikon DSLR Manual focus"),	"manualfocusdrive", 0, PTP_VENDOR_NIKON, PTP_OC_NIKON_MfDrive, _get_Nikon_MFDrive, _put_Nikon_MFDrive },
+	{ N_("Set Nikon Autofocus area"),	"changeafarea", 0, PTP_VENDOR_NIKON, PTP_OC_NIKON_ChangeAfArea, _get_Nikon_ChangeAfArea, _put_Nikon_ChangeAfArea },
 	{ N_("Set Nikon Control Mode"),		"controlmode", 0, PTP_VENDOR_NIKON, PTP_OC_NIKON_SetControlMode, _get_Nikon_ControlMode, _put_Nikon_ControlMode },
 	{ N_("Drive Canon DSLR Manual focus"),	"manualfocusdrive", 0, PTP_VENDOR_CANON, PTP_OC_CANON_EOS_DriveLens, _get_Canon_EOS_MFDrive, _put_Canon_EOS_MFDrive },
 	{ N_("Canon EOS Zoom"),			"eoszoom",          0, PTP_VENDOR_CANON, PTP_OC_CANON_EOS_Zoom, _get_Canon_EOS_Zoom, _put_Canon_EOS_Zoom},
@@ -5940,7 +6012,6 @@ camera_get_config (Camera *camera, CameraWidget **window, GPContext *context)
 			}
 		}
 	}
-	free (setprops);
 
 	if (!params->deviceinfo.DevicePropertiesSupported_len)
 		return GP_OK;
@@ -5955,6 +6026,18 @@ camera_get_config (Camera *camera, CameraWidget **window, GPContext *context)
 		char			buf[20], *label;
 		PTPDevicePropDesc	dpd;
 		CameraWidgetType	type;
+		int j;
+
+		for (j=0;j<nrofsetprops;j++)
+			if (setprops[j] == propid)
+				break;
+#if 0 /* enable this for suppression of generic properties for already decoded ones */
+		if (j<nrofsetprops) {
+			gp_log (GP_LOG_DEBUG, "camera_get_config", "Property 0x%04x already handled before, skipping.", propid );
+			continue;
+		}
+#endif
+
 
 		ret = ptp_getdevicepropdesc (params,propid,&dpd);
 		if (ret != PTP_RC_OK)
@@ -6086,6 +6169,7 @@ camera_get_config (Camera *camera, CameraWidget **window, GPContext *context)
 		gp_widget_append (section, widget);
 		ptp_free_devicepropdesc(&dpd);
 	}
+	free (setprops);
 	return GP_OK;
 }
 
