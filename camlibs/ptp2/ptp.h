@@ -74,12 +74,16 @@ typedef struct _PTPContainer PTPContainer;
  *
  * Previously we had this as 4096 for MTP devices. We have found
  * and fixed the bugs that made this necessary and it can be 512 again.
+ *
+ * USB 3.0 has now 1024 byte EPs.
  */
 #define PTP_USB_BULK_HS_MAX_PACKET_LEN_WRITE	512
 #define PTP_USB_BULK_HS_MAX_PACKET_LEN_READ   512
+#define PTP_USB_BULK_SS_MAX_PACKET_LEN_WRITE	1024
+#define PTP_USB_BULK_SS_MAX_PACKET_LEN_READ   1024
 #define PTP_USB_BULK_HDR_LEN		(2*sizeof(uint32_t)+2*sizeof(uint16_t))
-#define PTP_USB_BULK_PAYLOAD_LEN_WRITE	(PTP_USB_BULK_HS_MAX_PACKET_LEN_WRITE-PTP_USB_BULK_HDR_LEN)
-#define PTP_USB_BULK_PAYLOAD_LEN_READ	(PTP_USB_BULK_HS_MAX_PACKET_LEN_READ-PTP_USB_BULK_HDR_LEN)
+#define PTP_USB_BULK_PAYLOAD_LEN_WRITE	(PTP_USB_BULK_SS_MAX_PACKET_LEN_WRITE-PTP_USB_BULK_HDR_LEN)
+#define PTP_USB_BULK_PAYLOAD_LEN_READ	(PTP_USB_BULK_SS_MAX_PACKET_LEN_READ-PTP_USB_BULK_HDR_LEN)
 #define PTP_USB_BULK_REQ_LEN	(PTP_USB_BULK_HDR_LEN+5*sizeof(uint32_t))
 
 struct _PTPUSBBulkContainer {

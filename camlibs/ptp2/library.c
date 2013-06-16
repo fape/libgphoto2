@@ -438,6 +438,27 @@ fixup_cached_deviceinfo (Camera *camera, PTPDeviceInfo *di) {
 #endif
 }
 
+static uint16_t
+nikon_wait_busy(PTPParams *params, int waitms, int timeout) {
+	uint16_t	res;
+	int		tries;
+
+	/* wait either 1 second, or 50 tries */
+	if (waitms)
+		tries=timeout/waitms;
+	else
+		tries=50;
+
+	do {
+		res = ptp_nikon_device_ready(params);
+		if (res != PTP_RC_DeviceBusy)
+			return res;
+		if (waitms) usleep(waitms*1000)/*wait a bit*/;
+	} while (tries--);
+	return res;
+}
+
+
 static struct {
 	const char *model;
 	unsigned short usb_vendor;
@@ -690,6 +711,7 @@ static struct {
 	{"Sony:DSC-U10 (PTP mode)",   0x054c, 0x004e, 0},
 	/* "Riccardo (C10uD)" <c10ud.dev@gmail.com> */
 	{"Sony:DSC-S730 (PTP mode)",  0x054c, 0x0296, 0},
+	{"Sony:DSC-S780 (PTP mode)",  0x054c, 0x0296, 0},
 	/* Fernando Santoro <fernando.lopezjr@gmail.com> */
 	{"Sony:DSC-A100 (PTP mode)",  0x054c, 0x02c0, 0},
 	/* Sam Tseng <samtz1223@gmail.com> */
@@ -715,6 +737,9 @@ static struct {
 
 	/* t.ludewig@gmail.com */
 	{"Sony:DSC-HX200V (PTP mode)",0x054c, 0x061f, 0},
+
+	/* https://sourceforge.net/p/gphoto/feature-requests/424/ */
+	{"Sony:SLT-A57", 	      0x054c, 0x0669, 0},
 
 	/* t.ludewig@gmail.com */
 	{"Sony:DSC-HX300 (PTP mode)", 0x054c, 0x06ee, 0},
@@ -951,6 +976,11 @@ static struct {
 
 	/* Christian Deckelmann of Xerox */
 	{"Nikon:DSC D4",	          0x04b0, 0x042b, PTP_CAP|PTP_CAP_PREVIEW},
+
+	/* Lihuijun <lihuiplus@hotmail.com> */
+	/* cheap version, but perhaps has hidden commands */
+	{"Nikon:DSC D3200",	          0x04b0, 0x042c, PTP_CAP/*|PTP_CAP_PREVIEW*/},
+
 	/* t.ludewig@gmail.com */
 	{"Nikon:DSC D600",	          0x04b0, 0x042d, PTP_CAP|PTP_CAP_PREVIEW},
 	/* Roderick Stewart <roderick.stewart@gmail.com> */
@@ -1391,7 +1421,7 @@ static struct {
 	{"Canon:EOS 6D",			0x04a9, 0x3250, PTP_CAP|PTP_CAP_PREVIEW},
 
 	/* "T. Ludewig" <t.ludewig@gmail.com> */
-	{"Canon:PowerShot S110",		0x04a9, 0x325b, PTPBUG_DELETE_SENDS_EVENT},
+	{"Canon:PowerShot S110 (PTP Mode)",	0x04a9, 0x325b, PTPBUG_DELETE_SENDS_EVENT},
 	/* "T. Ludewig" <t.ludewig@gmail.com> */
 	{"Canon:PowerShot SX500IS",		0x04a9, 0x325c, PTPBUG_DELETE_SENDS_EVENT},
 	/* "T. Ludewig" <t.ludewig@gmail.com> */
@@ -3117,7 +3147,7 @@ camera_trigger_capture (Camera *camera, GPContext *context)
 		PTPPropertyValue propval;
 
 		CPR (context, ptp_check_event (params));
-		while (PTP_RC_DeviceBusy == ptp_nikon_device_ready (params));
+		CPR (context, nikon_wait_busy (params, 20, 1000));
 		CPR (context, ptp_check_event (params));
 
 		if (ptp_property_issupported (params, PTP_DPC_NIKON_LiveViewStatus)) {
@@ -5111,12 +5141,15 @@ read_file_func (CameraFilesystem *fs, const char *folder, const char *filename,
 		/* We do not allow downloading unknown type files as in most
 		cases they are special file (like firmware or control) which
 		sometimes _cannot_ be downloaded. doing so we avoid errors.*/
-		if (ob->oi.ObjectFormat == PTP_OFC_Association ||
-			(ob->oi.ObjectFormat == PTP_OFC_Undefined &&
+		/* however this avoids the possibility to download files on
+		 * Androids ... doh. Let reenable it again. */
+		if (ob->oi.ObjectFormat == PTP_OFC_Association
+	/*
+			|| (ob->oi.ObjectFormat == PTP_OFC_Undefined &&
 				((ob->oi.ThumbFormat == PTP_OFC_Undefined) ||
 				 (ob->oi.ThumbFormat == 0)
 			)
-			)
+			) */
 		)
 			return (GP_ERROR_NOT_SUPPORTED);
 
@@ -6480,8 +6513,13 @@ camera_init (Camera *camera, GPContext *context)
 		params->maxpacketsize 	= settings.usb.maxpacketsize;
 		gp_log (GP_LOG_DEBUG, "ptp2", "maxpacketsize %d", settings.usb.maxpacketsize);
 		if (params->device_flags & DEVICE_FLAG_OLYMPUS_XML_WRAPPED) {
+#ifdef HAVE_LIBXML2
 			gp_log (GP_LOG_DEBUG, "ptp2/usb", "Entering Olympus USB Mass Storage XML Wrapped Mode.\n");
 			olympus_setup (params);
+#else
+			gp_context_error (context, _("Olympus wrapped XML support is currently only available with libxml2 support built in."));				\
+			return GP_ERROR;
+#endif
 		}
 		break;
 	case GP_PORT_PTPIP: {
