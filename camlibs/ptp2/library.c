@@ -541,6 +541,8 @@ static struct {
 	{"Kodak:V570",   0x040a, 0x0591, 0},
 	{"Kodak:P850",   0x040a, 0x0592, 0},
 	{"Kodak:P880",   0x040a, 0x0593, 0},
+	/* Илья Розановский <rozanovskii.ilia@gmail.com> */
+	{"Kodak:Z8612 IS",0x040a, 0x0595, 0},
 	/* https://launchpad.net/distros/ubuntu/+source/libgphoto2/+bug/67532 */
 	{"Kodak:C530",   0x040a, 0x059a, 0},
 	/* Ivan Baldo, http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=387998 */
@@ -746,6 +748,8 @@ static struct {
 
 	/* t.ludewig@gmail.com */
 	{"Sony:NEX-3N (PTP mode)",    0x054c, 0x072f, 0},
+	/* Thorsten Ludewig <t.ludewig@gmail.com> */
+	{"Sony:SLT-A58",	      0x054c, 0x0736, 0},
 
 	/* Nikon Coolpix 2500: M. Meissner, 05 Oct 2003 */
 	{"Nikon:Coolpix 2500 (PTP mode)", 0x04b0, 0x0109, 0},
@@ -1026,7 +1030,8 @@ static struct {
 	/* https://sourceforge.net/tracker/?func=detail&atid=358874&aid=2950529&group_id=8874 */
 	{"Panasonic:DMC-FS62",		  0x04da, 0x2374, 0},
 	{"Panasonic:DMC-TZ18",		  0x04da, 0x2374, 0},
-	{"Panasonic:DMC-TZ20",		  0x04da, 0x2374, 0},
+	/* Jean Ribière <jean.ribiere@orange.fr> */
+	{"Panasonic:DMC-TZ8",		  0x04da, 0x2374, 0},
 	{"Panasonic:DMC-LX7",		  0x04da, 0x2374, 0},
 	/* Constantin B <klochto@gmail.com> */
 	{"Panasonic:DMC-GF1",             0x04da, 0x2374, 0},
@@ -1420,6 +1425,9 @@ static struct {
 	/* "François G." <francois@webcampak.com> */
 	{"Canon:EOS 6D",			0x04a9, 0x3250, PTP_CAP|PTP_CAP_PREVIEW},
 
+	/* Thorsten Ludewig <t.ludewig@gmail.com> */
+	{"Canon:PowerShot G15",			0x04a9, 0x3258, PTPBUG_DELETE_SENDS_EVENT},
+
 	/* "T. Ludewig" <t.ludewig@gmail.com> */
 	{"Canon:PowerShot S110 (PTP Mode)",	0x04a9, 0x325b, PTPBUG_DELETE_SENDS_EVENT},
 	/* "T. Ludewig" <t.ludewig@gmail.com> */
@@ -1802,6 +1810,7 @@ camera_abilities (CameraAbilitiesList *list)
 	a.usb_subclass = 1;
 	a.usb_protocol = 1;
 	a.operations =	GP_OPERATION_CAPTURE_IMAGE | /*GP_OPERATION_TRIGGER_CAPTURE |*/
+		        GP_OPERATION_CAPTURE_PREVIEW |
 			GP_OPERATION_CONFIG;
 	a.file_operations   = GP_FILE_OPERATION_PREVIEW|
 				GP_FILE_OPERATION_DELETE;
@@ -6365,7 +6374,8 @@ ptp_list_folder (PTPParams *params, uint32_t storage, uint32_t handle) {
 			memset (&params->objects[params->nrofobjects],0,sizeof(params->objects[params->nrofobjects]));
 			params->objects[params->nrofobjects].oid = handles.Handler[i];
 			params->objects[params->nrofobjects].flags = 0;
-			if (handle != PTP_HANDLER_SPECIAL) {
+			/* root directory list files might return all files, so avoid tagging it */
+			if (handle != PTP_HANDLER_SPECIAL && handle) {
 				gp_log (GP_LOG_DEBUG, "ptp_list_folder", "  parenthandle 0x%08x", handle);
 				if (handles.Handler[i] == handle) { /* EOS bug where oid == parent(oid) */
 					params->objects[params->nrofobjects].oi.ParentObject = 0;

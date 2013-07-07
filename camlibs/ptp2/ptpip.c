@@ -457,6 +457,7 @@ ptp_ptpip_init_command_ack (PTPParams* params)
 		return ret;
 	if (hdr.type != dtoh32(PTPIP_INIT_COMMAND_ACK)) {
 		gp_log (GP_LOG_ERROR, "ptpip/init_cmd_ack", "bad type returned %d", htod32(hdr.type));
+		free (data);
 		return PTP_RC_GeneralError;
 	}
 	params->eventpipeid = dtoh32a(&data[ptpip_cmdack_idx]);
@@ -505,11 +506,11 @@ ptp_ptpip_init_event_ack (PTPParams* params)
 	ret = ptp_ptpip_evt_read (params, &hdr, &data);
 	if (ret != PTP_RC_OK)
 		return ret;
+	free (data);
 	if (hdr.type != dtoh32(PTPIP_INIT_EVENT_ACK)) {
 		gp_log (GP_LOG_ERROR, "ptpip", "bad type returned %d\n", htod32(hdr.type));
 		return PTP_RC_GeneralError;
 	}
-	free (data);
 	return PTP_RC_OK;
 }
 
@@ -543,8 +544,14 @@ ptp_ptpip_event (PTPParams* params, PTPContainer* event, int wait)
 		else
 			timeout.tv_usec = 1000; /* 1/1000 second  .. perhaps wait longer? */
 
-		if (1 != select (params->evtfd+1, &infds, NULL, NULL, &timeout))
-			return PTP_RC_OK;
+		ret = select (params->evtfd+1, &infds, NULL, NULL, &timeout);
+		if (1 != ret) {
+			if (-1 == ret) {
+				gp_log (GP_LOG_DEBUG,"ptpip/event", "select returned error, errno is %d", errno);
+				return PTP_ERROR_IO;
+			}
+			return PTP_ERROR_TIMEOUT;
+		}
 
 		ret = ptp_ptpip_evt_read (params, &hdr, &data);
 		if (ret != PTP_RC_OK)

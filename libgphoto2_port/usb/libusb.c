@@ -301,12 +301,21 @@ gp_port_usb_open (GPPort *port)
 	if (ret < 0) {
 		int saved_errno = errno;
 		gp_port_set_error (port, _("Could not claim interface %d (%s). "
-					   "Make sure no other program "
+					   "Make sure no other program (%s) "
 					   "or kernel module (such as %s) "
 					   "is using the device and you have "
 					   "read/write access to the device."),
 				   port->settings.usb.interface,
 				   strerror(saved_errno),
+#ifdef __linux__
+				   "gvfs-gphoto2-volume-monitor",
+#else
+#if defined(__APPLE__)
+				   N_("MacOS PTPCamera service"),
+#else
+				   N_("unknown libgphoto2 using program"),
+#endif
+#endif
 				   "sdc2xx, stv680, spca50x");
 		return GP_ERROR_IO_USB_CLAIM;
 	}
@@ -966,8 +975,8 @@ gp_port_usb_match_mtp_device(struct usb_device *dev,int *configno, int *interfac
 	if ((dev->descriptor.bDeviceClass!=0xff) && (dev->descriptor.bDeviceClass!=0))
 		return 0;
 #endif
+	xifaces = xnocamifaces = 0;
 	if (dev->config) {
-		xifaces = xnocamifaces = 0;
 		for (i = 0; i < dev->descriptor.bNumConfigurations; i++) {
 			unsigned int j;
 
