@@ -1537,7 +1537,7 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 			(*ce)[i].u.object.oi.ObjectCompressedSize = dtoh32a(&curdata[PTP_ece_OI_Size]);
 			(*ce)[i].u.object.oi.Filename 		= strdup(((char*)&curdata[PTP_ece_OI_Name]));
 
-			ptp_debug (params, "event %d: request object transfer oid %08lx, ofc %04x, size %d, filename %s", i, (*ce)[i].u.object.oid, (*ce)[i].u.object.oi.ObjectFormat, (*ce)[i].u.object.oi.ObjectCompressedSize, (*ce)[i].u.object.oi.Filename);
+			ptp_debug (params, "event %d: request object transfer oid %08lx, ofc %04x, size %d, filename %p", i, (*ce)[i].u.object.oid, (*ce)[i].u.object.oi.ObjectFormat, (*ce)[i].u.object.oi.ObjectCompressedSize, (*ce)[i].u.object.oi.Filename);
 			break;
 		case  PTP_EC_CANON_EOS_AvailListChanged: {	/* property desc */
 			uint32_t	proptype = dtoh32a(&curdata[PTP_ece_Prop_Subtype]);
@@ -1809,6 +1809,11 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 					dpd->FactoryDefaultValue.u32	= dtoh32a(xdata);
 					dpd->CurrentValue.u32		= dtoh32a(xdata);
 					ptp_debug (params ,"event %d: currentvalue of %x is %x", i, proptype, dpd->CurrentValue.u32);
+					break;
+				case PTP_DTC_INT16:
+					dpd->FactoryDefaultValue.i16	= dtoh16a(xdata);
+					dpd->CurrentValue.i16		= dtoh16a(xdata);
+					ptp_debug (params,"event %d: currentvalue of %x is %d", i, proptype, dpd->CurrentValue.i16);
 					break;
 				case PTP_DTC_UINT16:
 					dpd->FactoryDefaultValue.u16	= dtoh16a(xdata);

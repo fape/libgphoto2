@@ -599,11 +599,13 @@ _get_Generic16Table(CONFIG_GET_ARGS, struct deviceproptableu16* tbl, int tblsize
 				    (tbl[j].vendor_id == camera->pl->params.deviceinfo.VendorExtensionID)
 				) {
 					gp_widget_add_choice (*widget, _(tbl[j].label));
-					if (tbl[j].value == dpd->CurrentValue.u16)
+					if (tbl[j].value == dpd->CurrentValue.u16) {
 						gp_widget_set_value (*widget, _(tbl[j].label));
+						isset2 = TRUE;
+					}
 				}
 			}
-			return GP_OK;
+			/* fallthrough in case we do not have currentvalue in the table. isset2 = FALSE */
 		}
 		for (i = 0; i<dpd->FORM.Enum.NumberOfValues; i++) {
 			isset = FALSE;
@@ -759,11 +761,13 @@ _get_GenericI16Table(CONFIG_GET_ARGS, struct deviceproptablei16* tbl, int tblsiz
 				    (tbl[j].vendor_id == camera->pl->params.deviceinfo.VendorExtensionID)
 				) {
 					gp_widget_add_choice (*widget, _(tbl[j].label));
-					if (tbl[j].value == dpd->CurrentValue.i16)
+					if (tbl[j].value == dpd->CurrentValue.i16) {
 						gp_widget_set_value (*widget, _(tbl[j].label));
+						isset2 = TRUE;
+					}
 				}
 			}
-			return GP_OK;
+			/* fallthrough */
 		}
 		for (i = 0; i<dpd->FORM.Enum.NumberOfValues; i++) {
 			isset = FALSE;
@@ -1163,34 +1167,36 @@ _put_INT(CONFIG_PUT_ARGS) {
 	case PTP_DTC_UINT32:
 	case PTP_DTC_UINT16:
 	case PTP_DTC_UINT8:
-		sscanf (value, "%u", &u );
+		if (1 != sscanf (value, "%u", &u ))
+			return GP_ERROR_BAD_PARAMETERS;
 		break;
 	case PTP_DTC_INT32:
 	case PTP_DTC_INT16:
 	case PTP_DTC_INT8:
-		sscanf (value, "%d", &i );
+		if (1 != sscanf (value, "%d", &i ))
+			return GP_ERROR_BAD_PARAMETERS;
 		break;
 	default:
 		return GP_ERROR;
 	}
 	switch (dpd->DataType) {
 	case PTP_DTC_UINT32:
-		dpd->CurrentValue.u32 = u;
+		propval->u32 = u;
 		break;
 	case PTP_DTC_INT32:
-		dpd->CurrentValue.i32 = i;
+		propval->i32 = i;
 		break;
 	case PTP_DTC_UINT16:
-		dpd->CurrentValue.u16 = u;
+		propval->u16 = u;
 		break;
 	case PTP_DTC_INT16:
-		dpd->CurrentValue.i16 = i;
+		propval->i16 = i;
 		break;
 	case PTP_DTC_UINT8:
-		dpd->CurrentValue.u8 = u;
+		propval->u8 = u;
 		break;
 	case PTP_DTC_INT8:
-		dpd->CurrentValue.i8 = i;
+		propval->i8 = i;
 		break;
 	}
 	return GP_OK;
@@ -5635,6 +5641,7 @@ static struct submenu image_settings_menu[] = {
 	{ N_("ISO Auto"), "isoauto", PTP_DPC_NIKON_ISO_Auto, PTP_VENDOR_NIKON, PTP_DTC_UINT8, _get_Nikon_OnOff_UINT8, _put_Nikon_OnOff_UINT8},
 	{ N_("WhiteBalance"), "whitebalance", PTP_DPC_CANON_WhiteBalance, PTP_VENDOR_CANON, PTP_DTC_UINT8, _get_Canon_WhiteBalance, _put_Canon_WhiteBalance},
 	{ N_("WhiteBalance"), "whitebalance", PTP_DPC_CANON_EOS_WhiteBalance, PTP_VENDOR_CANON, PTP_DTC_UINT8, _get_Canon_EOS_WhiteBalance, _put_Canon_EOS_WhiteBalance},
+	{ N_("Color Temperature"), "colortemperature", PTP_DPC_CANON_EOS_ColorTemperature, PTP_VENDOR_CANON, PTP_DTC_UINT32, _get_INT, _put_INT},
 	{ N_("WhiteBalance"), "whitebalance", PTP_DPC_WhiteBalance, 0, PTP_DTC_UINT16, _get_WhiteBalance, _put_WhiteBalance},
 	{ N_("WhiteBalance Adjust A") , "whitebalanceadjusta", PTP_DPC_CANON_EOS_WhiteBalanceAdjustA, PTP_VENDOR_CANON, PTP_DTC_INT16, _get_Canon_EOS_WBAdjust, _put_Canon_EOS_WBAdjust},
 	{ N_("WhiteBalance Adjust B") , "whitebalanceadjustb", PTP_DPC_CANON_EOS_WhiteBalanceAdjustB, PTP_VENDOR_CANON, PTP_DTC_INT16, _get_Canon_EOS_WBAdjust, _put_Canon_EOS_WBAdjust},
