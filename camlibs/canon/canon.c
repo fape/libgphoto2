@@ -1718,7 +1718,8 @@ canon_int_get_release_params (Camera *camera, GPContext *context)
 {
         unsigned char *response = NULL;
         unsigned int len = 0x8c;
-        int i, status;
+	unsigned int i;
+        int status;
 
         GP_DEBUG ("canon_int_get_release_params()");
 
@@ -2649,11 +2650,11 @@ canon_int_get_time (Camera *camera, time_t *camera_time, GPContext *context)
                 return GP_ERROR_CORRUPTED_DATA;
         }
 
-        if (camera_time != NULL)
+        if (camera_time != NULL) {
                 *camera_time = (time_t) le32atoh (msg + 4);
-
-        /* XXX should strip \n at the end of asctime() return data */
-        GP_DEBUG ("Camera time: %s", asctime (gmtime (camera_time)));
+		/* XXX should strip \n at the end of asctime() return data */
+		GP_DEBUG ("Camera time: %s", asctime (gmtime (camera_time)));
+	}
 
         return GP_OK;
 }
@@ -2820,9 +2821,8 @@ canon_int_get_disk_name (Camera *camera, GPContext *context)
                          */
                         msg = (unsigned char *)strdup ((char *)msg + 4);        /* @@@ should check length */
                         if ( msg == NULL ) {
-                                GP_DEBUG ("canon_int_get_disk_name: could not allocate %li "
-                                          "bytes of memory to hold response",
-                                          (long)(strlen ((char *) msg + 4)));
+                                GP_DEBUG ("canon_int_get_disk_name: could not allocate "
+                                          "memory to hold response");
                                 return NULL;
                         }
                         break;
@@ -3330,11 +3330,10 @@ canon_int_list_directory (Camera *camera, const char *folder, CameraList *list,
                                                  sizeof (info.file.type));
                                         info.file.fields |= GP_FILE_INFO_TYPE;
 
-                                        if ((dirent_attrs & CANON_ATTR_DOWNLOADED) == 0)
-                                                info.file.status = GP_FILE_STATUS_DOWNLOADED;
+                                        if (dirent_attrs & CANON_ATTR_NOT_DOWNLOADED)
+                                                info.file.status = GP_FILE_STATUS_NOT_DOWNLOADED;
                                         else
-                                                info.file.status =
-                                                        GP_FILE_STATUS_NOT_DOWNLOADED;
+                                                info.file.status = GP_FILE_STATUS_DOWNLOADED;
                                         info.file.fields |= GP_FILE_INFO_STATUS;
 
                                         /* the size is located at offset 2 and is 4
@@ -3894,11 +3893,10 @@ canon_int_get_info_func (Camera *camera, const char *folder,
                                                  sizeof (info->file.type));
                                         info->file.fields |= GP_FILE_INFO_TYPE;
 
-                                        if ((dirent_attrs & CANON_ATTR_DOWNLOADED) == 0)
-                                                info->file.status = GP_FILE_STATUS_DOWNLOADED;
+                                        if (dirent_attrs & CANON_ATTR_NOT_DOWNLOADED)
+                                                info->file.status = GP_FILE_STATUS_NOT_DOWNLOADED;
                                         else
-                                                info->file.status =
-                                                        GP_FILE_STATUS_NOT_DOWNLOADED;
+                                                info->file.status = GP_FILE_STATUS_DOWNLOADED;
                                         info->file.fields |= GP_FILE_INFO_STATUS;
 
                                         /* the size is located at offset 2 and is 4
@@ -4061,7 +4059,8 @@ canon_int_extract_jpeg_thumb (unsigned char *data, const unsigned int datalen,
                  * software assume that the EXIF is included in the
                  * JPEG thumbnail and just fetch the thumbnail to get
                  * the EXIF data. */
-                int ifd0_offset, ifd1_offset, n_tags;
+		unsigned int n_tags;
+                int ifd0_offset, ifd1_offset;
                 int jpeg_offset = -1, jpeg_size = -1;
 
                 GP_DEBUG ( "canon_int_extract_jpeg_thumb: this is from a CR2 file.");

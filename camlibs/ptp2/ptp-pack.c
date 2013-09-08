@@ -200,7 +200,8 @@ ptp_pack_string(PTPParams *params, char *string, unsigned char* data, uint16_t o
 	} else
 #endif
 	{
-		int i;
+		unsigned int i;
+
 		for (i=0;i<convlen;i++) {
 			ucs2str[i] = string[i];
 		}
@@ -356,7 +357,7 @@ ptp_unpack_DI (PTPParams *params, unsigned char* data, PTPDeviceInfo *di, unsign
 		&len);
 }
 
-static void inline
+inline static void
 ptp_free_DI (PTPDeviceInfo *di) {
 	if (di->SerialNumber) free (di->SerialNumber);
 	if (di->DeviceVersion) free (di->DeviceVersion);
@@ -374,7 +375,7 @@ ptp_free_DI (PTPDeviceInfo *di) {
 static inline void
 ptp_unpack_EOS_DI (PTPParams *params, unsigned char* data, PTPCanonEOSDeviceInfo *di, unsigned int datalen)
 {
-	int totallen = 4;
+	unsigned int totallen = 4;
 
 	memset (di,0, sizeof(*di));
 	if (datalen < 8) return;
@@ -653,7 +654,7 @@ ptp_unpack_OI (PTPParams *params, unsigned char* data, PTPObjectInfo *oi, unsign
 }
 
 #define RARR(val,member,func)	{			\
-	int n,j;					\
+	unsigned int n,j;					\
 	if (total - *offset < sizeof(uint32_t))		\
 		return 0;				\
 	n = dtoh32a (&data[*offset]);			\
@@ -666,9 +667,9 @@ ptp_unpack_OI (PTPParams *params, unsigned char* data, PTPObjectInfo *oi, unsign
 		CTVAL(val->a.v[j].member, func);	\
 }
 
-static inline int
+static inline unsigned int
 ptp_unpack_DPV (
-	PTPParams *params, unsigned char* data, int *offset, int total,
+	PTPParams *params, unsigned char* data, unsigned int *offset, int total,
 	PTPPropertyValue* value, uint16_t datatype
 ) {
 	switch (datatype) {
@@ -758,7 +759,7 @@ ptp_unpack_DPV (
 static inline int
 ptp_unpack_DPD (PTPParams *params, unsigned char* data, PTPDevicePropDesc *dpd, unsigned int dpdlen)
 {
-	int offset=0, ret;
+	unsigned int offset=0, ret;
 
 	memset (dpd, 0, sizeof(*dpd));
 	dpd->DevicePropertyCode=dtoh16a(&data[PTP_dpd_DevicePropertyCode]);
@@ -831,7 +832,7 @@ outofmemory:
 static inline void
 duplicate_PropertyValue (const PTPPropertyValue *src, PTPPropertyValue *dst, uint16_t type) {
 	if (type & PTP_DTC_ARRAY_MASK) {
-		int i;
+		unsigned int i;
 
 		dst->a.count = src->a.count;
 		dst->a.v = malloc (sizeof(src->a.v)*src->a.count);
@@ -895,7 +896,7 @@ duplicate_DevicePropDesc(const PTPDevicePropDesc *src, PTPDevicePropDesc *dst) {
 static inline int
 ptp_unpack_OPD (PTPParams *params, unsigned char* data, PTPObjectPropDesc *opd, unsigned int opdlen)
 {
-	int offset=0, ret;
+	unsigned int offset=0, ret;
 
 	memset (opd, 0, sizeof(*opd));
 	opd->ObjectPropertyCode=dtoh16a(&data[PTP_opd_ObjectPropertyCode]);
@@ -922,7 +923,7 @@ ptp_unpack_OPD (PTPParams *params, unsigned char* data, PTPObjectPropDesc *opd, 
 		if (!ret) goto outofmemory;
 		break;
 	case PTP_OPFF_Enumeration: {
-		int i;
+		unsigned int i;
 #define N	opd->FORM.Enum.NumberOfValues
 		N = dtoh16a(&data[offset]);
 		offset+=sizeof(uint16_t);
@@ -961,7 +962,7 @@ ptp_pack_DPV (PTPParams *params, PTPPropertyValue* value, unsigned char** dpvptr
 {
 	unsigned char* dpv=NULL;
 	uint32_t size=0;
-	int	i;
+	unsigned int i;
 
 	switch (datatype) {
 	case PTP_DTC_INT8:
@@ -1142,7 +1143,7 @@ ptp_unpack_OPL (PTPParams *params, unsigned char* data, MTPProperties **pprops, 
 { 
 	uint32_t prop_count = dtoh32a(data);
 	MTPProperties *props = NULL;
-	int offset = 0, i;
+	unsigned int offset = 0, i;
 
 	if (prop_count == 0) {
 		*pprops = NULL;
@@ -1544,7 +1545,7 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 			uint32_t	propxtype = dtoh32a(&curdata[PTP_ece_Prop_Desc_Type]);
 			uint32_t	propxcnt = dtoh32a(&curdata[PTP_ece_Prop_Desc_Count]);
 			unsigned char	*xdata = &curdata[PTP_ece_Prop_Desc_Data];
-			int		j;
+			unsigned int	j;
 			PTPDevicePropDesc	*dpd;
 
 			ptp_debug (params, "event %d: EOS prop %04x desc record, datasize %d, propxtype %d", i, proptype, size-PTP_ece_Prop_Desc_Data, propxtype);
@@ -1615,7 +1616,7 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 		}
 		case PTP_EC_CANON_EOS_PropValueChanged:
 			if (size >= 0xc) {	/* property info */
-				int j;
+				unsigned int j;
 				uint32_t	proptype = dtoh32a(&curdata[PTP_ece_Prop_Subtype]);
 				unsigned char	*xdata = &curdata[PTP_ece_Prop_Val_Data];
 				PTPDevicePropDesc	*dpd;
@@ -1915,7 +1916,7 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 				break;
 			}
 			if (size >= 0x8) {	/* event info */
-				int j;
+				unsigned int j;
 				for (j=8;j<size;j++)
 					ptp_debug (params, "    %d: %02x", j, curdata[j]);
 			}
@@ -1942,9 +1943,9 @@ ptp_unpack_CANON_changes (PTPParams *params, unsigned char* data, int datasize, 
 #define PTP_nikon_ec_Param1		4
 #define PTP_nikon_ec_Size		6
 static inline void
-ptp_unpack_Nikon_EC (PTPParams *params, unsigned char* data, unsigned int len, PTPContainer **ec, int *cnt)
+ptp_unpack_Nikon_EC (PTPParams *params, unsigned char* data, unsigned int len, PTPContainer **ec, unsigned int *cnt)
 {
-	int i;
+	unsigned int i;
 
 	*ec = NULL;
 	if (data == NULL)
@@ -2093,7 +2094,7 @@ ptp_unpack_canon_directory (
 	}
 	/* Walk over all objects and distribute the storage ids */
 	while (1) {
-		int changed = 0;
+		unsigned int changed = 0;
 		for (i=0;i<cnt;i++) {
 			unsigned char	*cur = dir+i*0x4c;
 			uint32_t	oid = dtoh32a(cur + ptp_canon_dir_objectid);

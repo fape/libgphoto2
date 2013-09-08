@@ -98,10 +98,10 @@ camera_abilities (CameraAbilitiesList *list)
 			a.operations = GP_OPERATION_NONE;
 		else
 			a.operations = GP_OPERATION_CAPTURE_IMAGE;
-			a.folder_operations = GP_FOLDER_OPERATION_DELETE_ALL;
-			a.file_operations   = GP_FILE_OPERATION_DELETE|
-					GP_FILE_OPERATION_PREVIEW;
-			gp_abilities_list_append (list, a);
+		a.folder_operations = GP_FOLDER_OPERATION_DELETE_ALL;
+		a.file_operations   = GP_FILE_OPERATION_DELETE|
+				GP_FILE_OPERATION_PREVIEW;
+		gp_abilities_list_append (list, a);
 	}
 	return GP_OK;
 }
@@ -486,9 +486,9 @@ delete_file_func (CameraFilesystem *fs, const char *folder,
 	if (k+1 != camera->pl->num_pics) {
 		GP_DEBUG("Only the last photo can be deleted!\n");
 		return GP_ERROR_NOT_SUPPORTED;
-	} else
-	    sonix_delete_last (camera->port);
-	    camera->pl->num_pics -= 1;
+	}
+	sonix_delete_last (camera->port);
+	camera->pl->num_pics -= 1;
 	return GP_OK;
 }
 

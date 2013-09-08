@@ -202,7 +202,7 @@ camera_canon_eos_update_capture_target(Camera *camera, GPContext *context, int v
 		return translate_ptp_result (ret);
 	}
 	if (dpd.FormFlag == PTP_DPFF_Enumeration) {
-		int			i;
+		unsigned int	i;
 		for (i=0;i<dpd.FORM.Enum.NumberOfValues;i++) {
 			if (dpd.FORM.Enum.SupportedValue[i].u32 != PTP_CANON_EOS_CAPTUREDEST_HD) {
 				cardval = dpd.FORM.Enum.SupportedValue[i].u32;
@@ -289,7 +289,7 @@ camera_prepare_canon_eos_capture(Camera *camera, GPContext *context) {
 	}
 	{
 		PTPCanonEOSDeviceInfo x;
-		int i;
+		unsigned int i;
 
 		if (ptp_operation_issupported(params, PTP_OC_CANON_EOS_GetDeviceInfoEx)) {
 			ret = ptp_canon_eos_getdeviceinfo (params, &x);
@@ -471,7 +471,7 @@ nikon_wait_busy(PTPParams *params, int waitms, int timeout) {
 
 static int
 have_prop(Camera *camera, uint16_t vendor, uint16_t prop) {
-	int i;
+	unsigned int i;
 
 	/* prop 0 matches */
 	if (!prop && (camera->pl->params.deviceinfo.VendorExtensionID==vendor))
@@ -502,7 +502,7 @@ have_prop(Camera *camera, uint16_t vendor, uint16_t prop) {
 
 static int
 have_eos_prop(Camera *camera, uint16_t vendor, uint16_t prop) {
-	int i;
+	unsigned int i;
 
 	/* The special Canon EOS property set gets special treatment. */
 	if ((camera->pl->params.deviceinfo.VendorExtensionID != PTP_VENDOR_CANON) ||
@@ -1000,8 +1000,8 @@ _put_##name(CONFIG_PUT_ARGS) {				\
 
 static int
 _get_AUINT8_as_CHAR_ARRAY(CONFIG_GET_ARGS) {
-	int	j;
-	char 	value[128];
+	unsigned int	j;
+	char 		value[128];
 
 	gp_widget_new (GP_WIDGET_TEXT, _(menu->label), widget);
 	gp_widget_set_name (*widget, menu->name);
@@ -1047,7 +1047,8 @@ _put_STR(CONFIG_PUT_ARGS) {
 static int
 _put_AUINT8_as_CHAR_ARRAY(CONFIG_PUT_ARGS) {
 	char	*value;
-	int	i, ret;
+	unsigned int i;
+	int	ret;
 
 	ret = gp_widget_get_value (widget, &value);
 	if (ret != GP_OK)
@@ -4308,9 +4309,23 @@ _get_Canon_EOS_RemoteRelease(CONFIG_GET_ARGS) {
 	gp_widget_add_choice (*widget, _("Press Full"));
 	gp_widget_add_choice (*widget, _("Release Half"));
 	gp_widget_add_choice (*widget, _("Release Full"));
+	gp_widget_add_choice (*widget, _("Immediate"));
+	/* debugging */
+	gp_widget_add_choice (*widget, _("Press 1"));
+	gp_widget_add_choice (*widget, _("Press 2"));
+	gp_widget_add_choice (*widget, _("Press 3"));
+	gp_widget_add_choice (*widget, _("Release 1"));
+	gp_widget_add_choice (*widget, _("Release 2"));
+	gp_widget_add_choice (*widget, _("Release 3"));
 	gp_widget_set_value (*widget, _("None"));
 	return (GP_OK);
 }
+
+/* On EOS 7D:
+ * 9128 1 0  (half?)
+ * 9128 2 0  (full?)
+ * paramters: press mode, ? afmode ? SDK seems to suggest 1==NonAF, 0 == AF
+ */
 
 static int
 _put_Canon_EOS_RemoteRelease(CONFIG_PUT_ARGS) {
@@ -4325,21 +4340,48 @@ _put_Canon_EOS_RemoteRelease(CONFIG_PUT_ARGS) {
 	if (!strcmp (val, _("None"))) return GP_OK;
 
 	if (!strcmp (val, _("Press Half"))) {
-		ret = ptp_canon_eos_remotereleaseon (params, 1);
+		ret = ptp_canon_eos_remotereleaseon (params, 1, 1);
 		goto leave;
 	}
 	if (!strcmp (val, _("Press Full"))) {
-		ret = ptp_canon_eos_remotereleaseon (params, 3);
+		ret = ptp_canon_eos_remotereleaseon (params, 3, 1);
 		goto leave;
 	}
 	if (!strcmp (val, _("Immediate"))) {
 		/* HACK by Flori Radlherr: "fire and forget" half release before release:
 		   Avoids autofocus drive while focus-switch on the lens is in AF state */
-		ret = ptp_canon_eos_remotereleaseon (params, 1);
+		ret = ptp_canon_eos_remotereleaseon (params, 1, 1);
 		if (ret == PTP_RC_OK)
-			ret = ptp_canon_eos_remotereleaseon (params, 3);
+			ret = ptp_canon_eos_remotereleaseon (params, 3, 1);
 		goto leave;
 	}
+/* try out others with 0 */
+	if (!strcmp (val, _("Press 1"))) {
+		ret = ptp_canon_eos_remotereleaseon (params, 1, 0);
+		goto leave;
+	}
+	if (!strcmp (val, _("Press 2"))) {
+		ret = ptp_canon_eos_remotereleaseon (params, 2, 0);
+		goto leave;
+	}
+	if (!strcmp (val, _("Press 3"))) {
+		ret = ptp_canon_eos_remotereleaseon (params, 3, 0);
+		goto leave;
+	}
+	if (!strcmp (val, _("Release 1"))) {
+		ret = ptp_canon_eos_remotereleaseoff (params, 1);
+		goto leave;
+	}
+	if (!strcmp (val, _("Release 2"))) {
+		ret = ptp_canon_eos_remotereleaseoff (params, 2);
+		goto leave;
+	}
+	if (!strcmp (val, _("Release 3"))) {
+		ret = ptp_canon_eos_remotereleaseoff (params, 3);
+		goto leave;
+	}
+
+
 	if (!strcmp (val, _("Release Half"))) {
 		ret = ptp_canon_eos_remotereleaseoff (params, 1);
 		goto leave;
@@ -5825,7 +5867,7 @@ static struct submenu nikon_d5100_capture_settings[] = {
 static struct submenu nikon_d90_capture_settings[] = {
 	{ N_("Minimum Shutter Speed"), "minimumshutterspeed", PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, PTP_DTC_UINT8, _get_Nikon_D90_PADVPValue, _put_Nikon_D90_PADVPValue},
 	{ N_("ISO Auto Hi Limit"), "isoautohilimit", PTP_DPC_NIKON_ISOAutoHiLimit, PTP_VENDOR_NIKON, PTP_DTC_INT8, _get_Nikon_D90_ISOAutoHiLimit, _put_Nikon_D90_ISOAutoHiLimit },
-	{ N_("Active D-Lighting"), "dlighting", PTP_DPC_NIKON_ISOAutoTime, PTP_VENDOR_NIKON, PTP_DTC_INT8, _get_Nikon_D90_ActiveDLighting, _put_Nikon_D90_ActiveDLighting },
+	{ N_("Active D-Lighting"), "dlighting", PTP_DPC_NIKON_ActiveDLighting, PTP_VENDOR_NIKON, PTP_DTC_INT8, _get_Nikon_D90_ActiveDLighting, _put_Nikon_D90_ActiveDLighting },
 	{ N_("High ISO Noise Reduction"), "highisonr", PTP_DPC_NIKON_NrHighISO, PTP_VENDOR_NIKON, PTP_DTC_INT8, _get_Nikon_D90_HighISONR, _put_Nikon_D90_HighISONR },
 	{ N_("Image Quality"), "imagequality", PTP_DPC_CompressionSetting, PTP_VENDOR_NIKON, PTP_DTC_UINT8, _get_Nikon_D90_Compression, _put_Nikon_D90_Compression},
 	{ N_("Continuous Shooting Speed Slow"), "shootingspeed", PTP_DPC_NIKON_D1ShootingSpeed, PTP_VENDOR_NIKON, PTP_DTC_UINT8, _get_Nikon_D90_ShootingSpeed, _put_Nikon_D90_ShootingSpeed},
@@ -5852,7 +5894,7 @@ static struct submenu nikon_d3s_capture_settings[] = {
 
 	/* same as D90 */
 	{ N_("High ISO Noise Reduction"), "highisonr", PTP_DPC_NIKON_NrHighISO, PTP_VENDOR_NIKON, PTP_DTC_INT8, _get_Nikon_D90_HighISONR, _put_Nikon_D90_HighISONR },
-	{ N_("Active D-Lighting"), "dlighting", PTP_DPC_NIKON_ISOAutoTime, PTP_VENDOR_NIKON, PTP_DTC_INT8, _get_Nikon_D90_ActiveDLighting, _put_Nikon_D90_ActiveDLighting },
+	{ N_("Active D-Lighting"), "dlighting", PTP_DPC_NIKON_ActiveDLighting, PTP_VENDOR_NIKON, PTP_DTC_INT8, _get_Nikon_D90_ActiveDLighting, _put_Nikon_D90_ActiveDLighting },
 
 	{ 0,0,0,0,0,0,0 },
 };
@@ -5861,7 +5903,7 @@ static struct submenu nikon_generic_capture_settings[] = {
 	/* filled in with D90 values */
 	{ N_("Minimum Shutter Speed"), "minimumshutterspeed", PTP_DPC_NIKON_PADVPMode, PTP_VENDOR_NIKON, PTP_DTC_UINT8, _get_Nikon_D90_PADVPValue, _put_Nikon_D90_PADVPValue},
 	{ N_("ISO Auto Hi Limit"), "isoautohilimit", PTP_DPC_NIKON_ISOAutoHiLimit, PTP_VENDOR_NIKON, PTP_DTC_INT8, _get_Nikon_D90_ISOAutoHiLimit, _put_Nikon_D90_ISOAutoHiLimit },
-	{ N_("Active D-Lighting"), "dlighting", PTP_DPC_NIKON_ISOAutoTime, PTP_VENDOR_NIKON, PTP_DTC_INT8, _get_Nikon_D90_ActiveDLighting, _put_Nikon_D90_ActiveDLighting },
+	{ N_("Active D-Lighting"), "dlighting", PTP_DPC_NIKON_ActiveDLighting, PTP_VENDOR_NIKON, PTP_DTC_INT8, _get_Nikon_D90_ActiveDLighting, _put_Nikon_D90_ActiveDLighting },
 	{ N_("High ISO Noise Reduction"), "highisonr", PTP_DPC_NIKON_NrHighISO, PTP_VENDOR_NIKON, PTP_DTC_INT8, _get_Nikon_D90_HighISONR, _put_Nikon_D90_HighISONR },
 	{ N_("Continuous Shooting Speed Slow"), "shootingspeed", PTP_DPC_NIKON_D1ShootingSpeed, PTP_VENDOR_NIKON, PTP_DTC_UINT8, _get_Nikon_D90_ShootingSpeed, _put_Nikon_D90_ShootingSpeed},
 	{ N_("Maximum continuous release"), "maximumcontinousrelease", PTP_DPC_NIKON_D2MaximumShots, PTP_VENDOR_NIKON, PTP_DTC_UINT8, _get_Range_UINT8, _put_Range_UINT8},
@@ -5901,8 +5943,9 @@ static struct menu menus[] = {
 int
 camera_get_config (Camera *camera, CameraWidget **window, GPContext *context)
 {
-	CameraWidget *section, *widget;
-	int menuno, submenuno, ret;
+	CameraWidget	*section, *widget;
+	unsigned int	menuno, submenuno;
+	int 		ret;
 	uint16_t	*setprops = NULL;
 	int		i, nrofsetprops = 0;
 	PTPParams	*params = &camera->pl->params;
@@ -6188,10 +6231,11 @@ camera_set_config (Camera *camera, CameraWidget *window, GPContext *context)
 {
 	CameraWidget		*section, *widget, *subwindow;
 	uint16_t		ret2;
-	int			menuno, submenuno, ret;
+	unsigned int		menuno, submenuno;
+	int			ret;
 	PTPParams		*params = &camera->pl->params;
 	PTPPropertyValue	propval;
-	int			i;
+	unsigned int		i;
 	CameraAbilities		ab;
 
 
